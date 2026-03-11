@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Mundial 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --dark: #0A0A0F;
+    --dark2: #111118;
+    --dark3: #1A1A24;
+    --dark4: #22222E;
+    --border: rgba(201,168,76,0.2);
+    --text: #E8E8F0;
+    --muted: #6B6B80;
+    --red: #E05252;
+    --green: #52C07C;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+  .login-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .login-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+
+  .login-card h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .login-card p { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+
+  input[type=password], input[type=number], input[type=text] {
+    width: 100%;
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+
+  input:focus { border-color: var(--gold); }
+
+  .btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #E8C96A);
+    border: none;
+    border-radius: 10px;
+    color: #0A0A0F;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn:hover { opacity: 0.9; }
+  .btn.secondary { background: var(--dark4); color: var(--text); border: 1px solid var(--border); margin-top: 8px; }
+
+  /* Admin panel */
+  #admin-panel { display: none; padding: 32px; max-width: 1200px; margin: 0 auto; }
+
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+
+  .github-config {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .github-config h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .config-grid input { margin-bottom: 0; }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .groups-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .group-tab {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--muted);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .group-tab.active { background: rgba(201,168,76,0.15); border-color: var(--gold); color: var(--gold); }
+  .group-tab.done { border-color: rgba(82,192,124,0.4); color: var(--green); }
+
+  .matches-admin { display: grid; gap: 10px; }
+
+  .match-admin {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .match-admin.has-result { border-color: rgba(82,192,124,0.3); }
+
+  .team-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .team-label.away { flex-direction: row-reverse; text-align: right; }
+
+  .result-inputs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .result-input {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    -moz-appearance: textfield;
+    background: var(--dark2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    margin: 0 !important;
+  }
+
+  .result-input::-webkit-inner-spin-button,
+  .result-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .result-input:focus { border-color: var(--green) !important; }
+
+  /* All predictions view */
+  .predictions-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .predictions-table th {
+    background: var(--dark3);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    position: sticky;
+    top: 0;
+  }
+
+  .predictions-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .predictions-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .pred-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+  }
+
+  .pts-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .pts-4 { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .pts-2 { background: rgba(82,192,124,0.15); color: var(--green); }
+  .pts-1 { background: rgba(82,192,124,0.08); color: var(--green); }
+  .pts-0 { background: rgba(224,82,82,0.1); color: var(--red); }
+
+  .export-btn {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .export-btn:hover { background: var(--dark4); }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    z-index: 1000;
+    transform: translateX(150%);
+    transition: transform 0.3s ease;
+  }
+  .toast.show { transform: translateX(0); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <h1>🔐 Admin</h1>
+    <p>Panel de administración de la quiniela</p>
+    <input type="password" id="admin-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="btn" onclick="adminLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <h1>⚽ Panel Admin — Mundial 2026</h1>
+    <div style="display:flex;gap:12px">
+      <button class="export-btn" onclick="exportData()">📥 Exportar JSON</button>
+      <button class="export-btn" onclick="showSection('results')">Resultados</button>
+      <button class="export-btn" onclick="showSection('predictions')">Pronósticos</button>
+      <button class="export-btn" onclick="showSection('config')">Config GitHub</button>
+    </div>
+  </div>
+
+  <!-- GITHUB CONFIG -->
+  <div id="section-config">
+    <div class="github-config">
+      <h3>🔗 Configuración GitHub</h3>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
+        Para que los pronósticos se guarden automáticamente en tu repositorio GitHub, configura aquí tu token personal y el nombre del repo.
+      </p>
+      <div class="config-grid">
+        <input type="text" id="gh-repo" placeholder="usuario/nombre-repo (ej: juanperez/mundial2026)">
+        <input type="password" id="gh-token" placeholder="GitHub Personal Access Token">
+      </div>
+      <div style="margin-top:12px;display:flex;gap:12px;">
+        <button class="btn" style="width:auto;padding:12px 24px;" onclick="saveGithubConfig()">Guardar configuración</button>
+        <button class="btn secondary" style="width:auto;padding:12px 24px;" onclick="testGithubConfig()">Probar conexión</button>
+      </div>
+      <div id="config-status" style="margin-top:12px;font-size:13px;color:var(--muted);"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS ENTRY -->
+  <div id="section-results">
+    <div class="section-title">Introducir Resultados Reales</div>
+    <div class="groups-tabs" id="admin-group-tabs"></div>
+    <div class="matches-admin" id="admin-matches"></div>
+    <div style="margin-top:20px">
+      <button class="btn" style="width:auto;padding:12px 32px;" onclick="saveResults()">Guardar resultados y recalcular puntos</button>
+    </div>
+  </div>
+
+  <!-- ALL PREDICTIONS VIEW -->
+  <div id="section-predictions" style="display:none">
+    <div class="section-title">Todos los Pronósticos</div>
+    <div id="all-predictions-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+// ADMIN PASSWORD
+// Change this to your desired password!
+// =====================
+const ADMIN_PASSWORD = "mundial2026admin";
+
+const FLAGS = {
+  "México": "🇲🇽", "Ecuador": "🇪🇨", "Bolivia": "🇧🇴", "Uzbekistán": "🇺🇿",
+  "USA": "🇺🇸", "Arabia Saudí": "🇸🇦", "Australia": "🇦🇺", "Panamá": "🇵🇦",
+  "Canadá": "🇨🇦", "Nigeria": "🇳🇬", "Nueva Zelanda": "🇳🇿", "Honduras": "🇭🇳",
+  "Brasil": "🇧🇷", "Paraguay": "🇵🇾", "Japón": "🇯🇵", "Congo": "🇨🇩",
+  "Argentina": "🇦🇷", "Sudáfrica": "🇿🇦", "Croacia": "🇭🇷", "Senegal": "🇸🇳",
+  "España": "🇪🇸", "Serbia": "🇷🇸", "Angola": "🇦🇴", "Países Bajos": "🇳🇱",
+  "Francia": "🇫🇷", "Túnez": "🇹🇳", "Chile": "🇨🇱", "Camerún": "🇨🇲",
+  "Portugal": "🇵🇹", "Ghana": "🇬🇭", "Suiza": "🇨🇭", "Rep. Checa": "🇨🇿",
+  "Alemania": "🇩🇪", "Irlanda del Norte": "🇬🇧", "Turquía": "🇹🇷", "Rumanía": "🇷🇴",
+  "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Côte d'Ivoire": "🇨🇮", "Grecia": "🇬🇷", "Irán": "🇮🇷",
+  "Bélgica": "🇧🇪", "Marruecos": "🇲🇦", "Ucrania": "🇺🇦", "Azerbaiyán": "🇦🇿",
+  "Italia": "🇮🇹", "Egipto": "🇪🇬", "Qatar": "🇶🇦", "Colombia": "🇨🇴",
+};
+
+const GROUPS_DATA = {
+  A: ["México", "Ecuador", "Bolivia", "Uzbekistán"],
+  B: ["USA", "Arabia Saudí", "Australia", "Panamá"],
+  C: ["Canadá", "Nigeria", "Nueva Zelanda", "Honduras"],
+  D: ["Brasil", "Paraguay", "Japón", "Congo"],
+  E: ["Argentina", "Sudáfrica", "Croacia", "Senegal"],
+  F: ["España", "Serbia", "Angola", "Países Bajos"],
+  G: ["Francia", "Túnez", "Chile", "Camerún"],
+  H: ["Portugal", "Ghana", "Suiza", "Rep. Checa"],
+  I: ["Alemania", "Irlanda del Norte", "Turquía", "Rumanía"],
+  J: ["Inglaterra", "Côte d'Ivoire", "Grecia", "Irán"],
+  K: ["Bélgica", "Marruecos", "Ucrania", "Azerbaiyán"],
+  L: ["Italia", "Egipto", "Qatar", "Colombia"],
+};
+
+function generateMatches() {
+  const matches = [];
+  let id = 1;
+  Object.entries(GROUPS_DATA).forEach(([group, teams]) => {
+    const pairs = [
+      [teams[0], teams[1]], [teams[2], teams[3]],
+      [teams[0], teams[2]], [teams[1], teams[3]],
+      [teams[0], teams[3]], [teams[1], teams[2]],
+    ];
+    pairs.forEach(([home, away]) => {
+      matches.push({ id: id++, group, home, away });
+    });
+  });
+  return matches;
+}
+
+const ALL_MATCHES = generateMatches();
+
+let currentAdminGroup = 'A';
+let savedResults = {};
+
+function adminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass === ADMIN_PASSWORD) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadAdmin();
+  } else {
+    showToast('Contraseña incorrecta');
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('admin-pass').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('admin-pass').style.borderColor = '', 2000);
+  }
+}
+
+function loadAdmin() {
+  // Load saved results
+  const r = localStorage.getItem('mundial2026_results');
+  savedResults = r ? JSON.parse(r) : {};
+
+  // Load GitHub config
+  const cfg = localStorage.getItem('mundial2026_github_config');
+  if (cfg) {
+    const { repo, token } = JSON.parse(cfg);
+    if (repo) document.getElementById('gh-repo').value = repo;
+    if (token) document.getElementById('gh-token').value = token;
+  }
+
+  renderAdminTabs();
+  renderAdminMatches(currentAdminGroup);
+}
+
+function renderAdminTabs() {
+  const tabs = document.getElementById('admin-group-tabs');
+  tabs.innerHTML = '';
+  Object.keys(GROUPS_DATA).forEach(g => {
+    const matches = ALL_MATCHES.filter(m => m.group === g);
+    const done = matches.filter(m => savedResults[m.id] !== undefined).length;
+    const btn = document.createElement('button');
+    btn.className = `group-tab ${g === currentAdminGroup ? 'active' : ''} ${done === 6 ? 'done' : ''}`;
+    btn.textContent = `Grupo ${g} ${done ? `(${done}/6)` : ''}`;
+    btn.onclick = () => { currentAdminGroup = g; renderAdminTabs(); renderAdminMatches(g); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderAdminMatches(group) {
+  const container = document.getElementById('admin-matches');
+  const matches = ALL_MATCHES.filter(m => m.group === group);
+  container.innerHTML = '';
+
+  matches.forEach(m => {
+    const r = savedResults[m.id];
+    const card = document.createElement('div');
+    card.className = `match-admin ${r !== undefined ? 'has-result' : ''}`;
+    card.innerHTML = `
+      <div class="team-label">
+        <span>${FLAGS[m.home] || '🏳️'}</span>
+        <span>${m.home}</span>
+      </div>
+      <div class="result-inputs">
+        <input type="number" class="result-input" id="r${m.id}_h" 
+          min="0" max="20" value="${r !== undefined ? r.home : ''}" placeholder="—">
+        <span style="font-family:'Bebas Neue';font-size:20px;color:var(--muted)">:</span>
+        <input type="number" class="result-input" id="r${m.id}_a"
+          min="0" max="20" value="${r !== undefined ? r.away : ''}" placeholder="—">
+      </div>
+      <div class="team-label away">
+        <span>${FLAGS[m.away] || '🏳️'}</span>
+        <span>${m.away}</span>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+async function saveResults() {
+  const matches = ALL_MATCHES.filter(m => m.group === currentAdminGroup);
+  let updated = 0;
+
+  matches.forEach(m => {
+    const h = document.getElementById(`r${m.id}_h`)?.value;
+    const a = document.getElementById(`r${m.id}_a`)?.value;
+    if (h !== '' && a !== '' && h !== undefined && a !== undefined) {
+      savedResults[m.id] = { home: parseInt(h), away: parseInt(a) };
+      updated++;
+    } else {
+      delete savedResults[m.id];
+    }
+  });
+
+  localStorage.setItem('mundial2026_results', JSON.stringify(savedResults));
+  
+  // Also update the matches in main app storage
+  await saveResultsToGitHub();
+  
+  renderAdminTabs();
+  renderAdminMatches(currentAdminGroup);
+  showToast(`✓ ${updated} resultados guardados y puntos recalculados`);
+}
+
+async function saveResultsToGitHub() {
+  const config = getGithubConfig();
+  if (!config.token || !config.repo) return;
+
+  const allUsers = JSON.parse(localStorage.getItem('mundial2026_all_users') || '{}');
+  
+  // Add results to the export
+  const exportData = {
+    results: savedResults,
+    users: allUsers,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(exportData, null, 2))));
+    
+    let sha = null;
+    const check = await fetch(`https://api.github.com/repos/${config.repo}/contents/data/predictions.json`, {
+      headers: { 'Authorization': `token ${config.token}` }
+    });
+    if (check.ok) sha = (await check.json()).sha;
+
+    await fetch(`https://api.github.com/repos/${config.repo}/contents/data/predictions.json`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Admin: update results ${new Date().toISOString()}`,
+        content,
+        ...(sha && { sha })
+      })
+    });
+    showToast('✓ Guardado también en GitHub');
+  } catch(e) {
+    console.warn('GitHub save failed:', e);
+  }
+}
+
+function showSection(s) {
+  document.getElementById('section-config').style.display = s === 'config' ? 'block' : 'none';
+  document.getElementById('section-results').style.display = s === 'results' ? 'block' : 'none';
+  document.getElementById('section-predictions').style.display = s === 'predictions' ? 'block' : 'none';
+  if (s === 'predictions') renderAllPredictions();
+}
+
+function renderAllPredictions() {
+  const allUsers = JSON.parse(localStorage.getItem('mundial2026_all_users') || '{}');
+  const content = document.getElementById('all-predictions-content');
+  
+  if (Object.keys(allUsers).length === 0) {
+    content.innerHTML = '<p style="color:var(--muted);font-size:14px;">No hay pronósticos registrados aún.</p>';
+    return;
+  }
+
+  const rows = Object.values(allUsers).map(user => {
+    let pts = 0, exact = 0, correct = 0;
+    ALL_MATCHES.forEach(m => {
+      const r = savedResults[m.id];
+      if (!r) return;
+      const p = user.predictions?.[m.id];
+      if (!p || p.home === undefined) return;
+      const earned = calcPoints(+p.home, +p.away, r.home, r.away);
+      pts += earned;
+      if (earned >= 4) exact++;
+      else if (earned >= 1) correct++;
+    });
+    return { ...user, pts, exact, correct };
+  }).sort((a, b) => b.pts - a.pts);
+
+  content.innerHTML = `
+    <table class="predictions-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Exactos</th>
+          <th>Aciertos</th>
+          <th>Pts</th>
+          <th>Registrado</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((u, i) => `
+          <tr>
+            <td>${i+1}</td>
+            <td><strong>${u.name}</strong></td>
+            <td style="color:var(--muted)">${u.email}</td>
+            <td><span class="pts-badge pts-4">${u.exact} exactos</span></td>
+            <td><span class="pts-badge pts-1">${u.correct} aciertos</span></td>
+            <td><strong style="color:var(--gold)">${u.pts}</strong></td>
+            <td style="color:var(--muted);font-size:11px;">${new Date(u.registeredAt).toLocaleDateString('es-ES')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function calcPoints(ph, pa, ah, aa) {
+  if (ph === ah && pa === aa) return 4;
+  const pd = ph - pa, ad = ah - aa;
+  if (Math.sign(pd) === Math.sign(ad) && pd === ad) return 2;
+  if (Math.sign(pd) === Math.sign(ad)) return 1;
+  return 0;
+}
+
+function saveGithubConfig() {
+  const repo = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  localStorage.setItem('mundial2026_github_config', JSON.stringify({ repo, token }));
+  document.getElementById('config-status').textContent = '✓ Configuración guardada';
+  document.getElementById('config-status').style.color = 'var(--green)';
+  showToast('Configuración de GitHub guardada');
+}
+
+async function testGithubConfig() {
+  const repo = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  const status = document.getElementById('config-status');
+  status.textContent = 'Probando...';
+  status.style.color = 'var(--muted)';
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (res.ok) {
+      status.textContent = '✓ Conexión exitosa con GitHub';
+      status.style.color = 'var(--green)';
+    } else {
+      status.textContent = '✗ Error: ' + res.status + ' — verifica el token y el nombre del repo';
+      status.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    status.textContent = '✗ Error de red: ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+}
+
+function getGithubConfig() {
+  const s = localStorage.getItem('mundial2026_github_config');
+  return s ? JSON.parse(s) : { token: null, repo: null };
+}
+
+function exportData() {
+  const allUsers = JSON.parse(localStorage.getItem('mundial2026_all_users') || '{}');
+  const data = {
+    exportedAt: new Date().toISOString(),
+    results: savedResults,
+    users: allUsers,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mundial2026_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  showToast('Exportado correctamente');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Default to results section
+showSection('results');
+</script>
+</body>
+</html>

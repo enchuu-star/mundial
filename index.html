@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundial 2026 — Quiniela</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --dark: #0A0A0F;
+    --dark2: #111118;
+    --dark3: #1A1A24;
+    --dark4: #22222E;
+    --border: rgba(201,168,76,0.2);
+    --text: #E8E8F0;
+    --muted: #6B6B80;
+    --red: #E05252;
+    --green: #52C07C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 0%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(201,168,76,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    padding: 0 max(24px, 5vw);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--gold);
+  }
+
+  nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-btn:hover { color: var(--text); background: var(--dark3); }
+  .nav-btn.active { color: var(--gold); background: rgba(201,168,76,0.1); }
+
+  /* ===== PAGES ===== */
+  .page { display: none; padding: 32px max(24px, 5vw); position: relative; z-index: 1; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    padding: 60px 0 48px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 0.95;
+    letter-spacing: 4px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+    max-width: 420px;
+    margin: 0 auto 36px;
+    line-height: 1.6;
+  }
+
+  /* ===== REGISTER FORM ===== */
+  .register-card {
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+  }
+
+  .register-card h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .register-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus { border-color: var(--gold); }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 10px;
+    color: #0A0A0F;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.99); }
+
+  /* ===== PREDICTIONS PAGE ===== */
+  .predictions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .predictions-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+  }
+
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 16px 8px 8px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0A0A0F;
+  }
+
+  .user-name { font-size: 13px; font-weight: 500; }
+
+  /* Groups tabs */
+  .groups-tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 24px;
+    scrollbar-width: none;
+  }
+
+  .groups-tabs::-webkit-scrollbar { display: none; }
+
+  .group-tab {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.05);
+    color: var(--muted);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .group-tab:hover { color: var(--text); border-color: var(--border); }
+  .group-tab.active { background: rgba(201,168,76,0.12); border-color: var(--gold); color: var(--gold); }
+  .group-tab.completed { border-color: rgba(82,192,124,0.3); }
+  .group-tab.completed.active { background: rgba(82,192,124,0.1); border-color: var(--green); color: var(--green); }
+
+  /* Matches grid */
+  .matches-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .match-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .match-card:hover { border-color: var(--border); }
+  .match-card.has-prediction { border-color: rgba(201,168,76,0.2); background: rgba(201,168,76,0.03); }
+  .match-card.locked { opacity: 0.7; }
+
+  .match-team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .match-team.away { flex-direction: row-reverse; text-align: right; }
+
+  .team-flag {
+    width: 32px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--dark4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .team-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .match-prediction {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-input {
+    width: 44px;
+    height: 44px;
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .score-input::-webkit-inner-spin-button,
+  .score-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .score-input:focus { border-color: var(--gold); }
+  .score-input.filled { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.05); }
+
+  .score-sep {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--muted);
+  }
+
+  /* Points badge on match */
+  .match-points {
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    background: var(--green);
+    color: #0A0A0F;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .match-card { position: relative; }
+
+  .match-result-actual {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Save button */
+  .save-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.95);
+    border-top: 1px solid var(--border);
+    padding: 16px max(24px, 5vw);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .save-bar.visible { transform: translateY(0); }
+
+  .save-progress {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .save-progress strong { color: var(--gold); }
+
+  .btn-save {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 10px;
+    color: #0A0A0F;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-save:hover { opacity: 0.9; }
+
+  /* ===== LEADERBOARD ===== */
+  .leaderboard-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .leaderboard-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .scoring-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .scoring-pill {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .scoring-pill .pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .scoring-pill .label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ranking-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .rank-row {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .rank-row:hover { transform: translateX(4px); border-color: var(--border); }
+  .rank-row.rank-1 { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.05); }
+  .rank-row.rank-2 { border-color: rgba(192,192,192,0.3); }
+  .rank-row.rank-3 { border-color: rgba(205,127,50,0.3); }
+
+  .rank-pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    width: 32px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .rank-row.rank-1 .rank-pos { color: var(--gold); }
+  .rank-row.rank-2 .rank-pos { color: #C0C0C0; }
+  .rank-row.rank-3 .rank-pos { color: #CD7F32; }
+
+  .rank-medal { font-size: 20px; width: 28px; text-align: center; }
+
+  .rank-name { flex: 1; font-weight: 500; }
+  .rank-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .rank-pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    min-width: 48px;
+    text-align: right;
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    z-index: 1000;
+    transform: translateX(150%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+  }
+
+  .toast.show { transform: translateX(0); }
+  .toast.success { border-color: rgba(82,192,124,0.4); }
+  .toast.error { border-color: rgba(224,82,82,0.4); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: var(--dark4);
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  @media (max-width: 600px) {
+    .rank-stats { display: none; }
+    .match-card { padding: 16px; }
+    .team-name { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚽</div>
+    <span class="logo-text">Mundial 2026</span>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('home')">Inicio</button>
+    <button class="nav-btn" onclick="showPage('predictions')">Pronósticos</button>
+    <button class="nav-btn" onclick="showPage('leaderboard')">Clasificación</button>
+  </nav>
+</header>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">🏆 FIFA World Cup 2026</div>
+    <h1>HAZ TU<br><span>PRONÓSTICO</span></h1>
+    <p>Predice los resultados de la fase de grupos y compite con tus amigos por el título de mejor pronosticador.</p>
+  </div>
+
+  <div class="register-card" id="register-section">
+    <h2>Únete</h2>
+    <p>Introduce tu nombre para guardar tus pronósticos</p>
+    <div class="form-group">
+      <label>Tu nombre</label>
+      <input type="text" id="input-name" placeholder="Ej: Carlos García" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label>Tu email</label>
+      <input type="email" id="input-email" placeholder="para identificarte">
+    </div>
+    <button class="btn-primary" onclick="registerUser()">Empezar a pronosticar →</button>
+  </div>
+
+  <div id="welcome-section" style="display:none; text-align:center; padding:40px 0;">
+    <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Bienvenido de vuelta,</p>
+    <h2 id="welcome-name" style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--gold);"></h2>
+    <p id="welcome-stats" style="color:var(--muted);font-size:13px;margin-top:8px;"></p>
+    <div style="margin-top:32px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <button class="btn-primary" style="width:auto;padding:12px 32px;" onclick="showPage('predictions')">Ver mis pronósticos</button>
+      <button class="btn-primary" style="width:auto;padding:12px 32px;background:var(--dark3);border:1px solid var(--border);color:var(--text);" onclick="showPage('leaderboard')">Ver clasificación</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREDICTIONS PAGE -->
+<div id="page-predictions" class="page">
+  <div class="predictions-header">
+    <h2>Pronósticos</h2>
+    <div class="user-badge" id="user-badge" style="display:none">
+      <div class="user-avatar" id="user-avatar-letter"></div>
+      <span class="user-name" id="user-badge-name"></span>
+    </div>
+  </div>
+
+  <div id="predictions-login-prompt" style="text-align:center;padding:60px 20px;color:var(--muted);">
+    <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+    <p>Primero regístrate en la página de inicio</p>
+    <button class="btn-primary" style="width:auto;margin-top:16px;padding:12px 28px;" onclick="showPage('home')">Ir al inicio</button>
+  </div>
+
+  <div id="predictions-content" style="display:none">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <div class="groups-tabs" id="groups-tabs"></div>
+    <div class="matches-grid" id="matches-container"></div>
+  </div>
+
+  <div class="save-bar" id="save-bar">
+    <div class="save-progress">
+      <strong id="filled-count">0</strong> / <span id="total-count">72</span> pronósticos completados
+    </div>
+    <button class="btn-save" onclick="savePredictions()">Guardar pronósticos</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD PAGE -->
+<div id="page-leaderboard" class="page">
+  <h2 class="leaderboard-title">Clasificación</h2>
+  <p class="leaderboard-sub">Basada en los partidos con resultado oficial</p>
+
+  <div class="scoring-info">
+    <div class="scoring-pill">
+      <div class="pts">3+1</div>
+      <div class="label">Marcador exacto</div>
+    </div>
+    <div class="scoring-pill">
+      <div class="pts">1</div>
+      <div class="label">Ganador / empate</div>
+    </div>
+    <div class="scoring-pill">
+      <div class="pts">+1</div>
+      <div class="label">Bonus diferencia goles</div>
+    </div>
+  </div>
+
+  <div class="ranking-list" id="ranking-list">
+    <div class="empty-state">
+      <div class="icon">🏆</div>
+      <p>La clasificación aparecerá cuando haya pronósticos registrados</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+// DATA
+// =====================
+const GROUPS_DATA = {
+  A: ["México", "Ecuador", "Bolivia", "Uzbekistán"],
+  B: ["USA", "Arabia Saudí", "Australia", "Panamá"],
+  C: ["Canadá", "Nigeria", "Nueva Zelanda", "Honduras"],
+  D: ["Brasil", "Paraguay", "Japón", "Congo"],
+  E: ["Argentina", "Sudáfrica", "Croacia", "Senegal"],
+  F: ["España", "Serbia", "Angola", "Países Bajos"],
+  G: ["Francia", "Túnez", "Chile", "Camerún"],
+  H: ["Portugal", "Ghana", "Suiza", "Rep. Checa"],
+  I: ["Alemania", "Irlanda del Norte", "Turquía", "Rumanía"],
+  J: ["Inglaterra", "Côte d'Ivoire", "Grecia", "Irán"],
+  K: ["Bélgica", "Marruecos", "Ucrania", "Azerbaiyán"],
+  L: ["Italia", "Egipto", "Qatar", "Colombia"],
+};
+
+const FLAGS = {
+  "México": "🇲🇽", "Ecuador": "🇪🇨", "Bolivia": "🇧🇴", "Uzbekistán": "🇺🇿",
+  "USA": "🇺🇸", "Arabia Saudí": "🇸🇦", "Australia": "🇦🇺", "Panamá": "🇵🇦",
+  "Canadá": "🇨🇦", "Nigeria": "🇳🇬", "Nueva Zelanda": "🇳🇿", "Honduras": "🇭🇳",
+  "Brasil": "🇧🇷", "Paraguay": "🇵🇾", "Japón": "🇯🇵", "Congo": "🇨🇩",
+  "Argentina": "🇦🇷", "Sudáfrica": "🇿🇦", "Croacia": "🇭🇷", "Senegal": "🇸🇳",
+  "España": "🇪🇸", "Serbia": "🇷🇸", "Angola": "🇦🇴", "Países Bajos": "🇳🇱",
+  "Francia": "🇫🇷", "Túnez": "🇹🇳", "Chile": "🇨🇱", "Camerún": "🇨🇲",
+  "Portugal": "🇵🇹", "Ghana": "🇬🇭", "Suiza": "🇨🇭", "Rep. Checa": "🇨🇿",
+  "Alemania": "🇩🇪", "Irlanda del Norte": "🇬🇧", "Turquía": "🇹🇷", "Rumanía": "🇷🇴",
+  "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Côte d'Ivoire": "🇨🇮", "Grecia": "🇬🇷", "Irán": "🇮🇷",
+  "Bélgica": "🇧🇪", "Marruecos": "🇲🇦", "Ucrania": "🇺🇦", "Azerbaiyán": "🇦🇿",
+  "Italia": "🇮🇹", "Egipto": "🇪🇬", "Qatar": "🇶🇦", "Colombia": "🇨🇴",
+};
+
+function generateMatches() {
+  const matches = [];
+  let id = 1;
+  Object.entries(GROUPS_DATA).forEach(([group, teams]) => {
+    const pairs = [
+      [teams[0], teams[1]], [teams[2], teams[3]],
+      [teams[0], teams[2]], [teams[1], teams[3]],
+      [teams[0], teams[3]], [teams[1], teams[2]],
+    ];
+    pairs.forEach(([home, away]) => {
+      matches.push({ id: id++, group, home, away, homeScore: null, awayScore: null });
+    });
+  });
+  return matches;
+}
+
+const ALL_MATCHES = generateMatches();
+
+// =====================
+// STATE
+// =====================
+let currentUser = null;
+let currentGroup = 'A';
+let pendingChanges = false;
+
+function loadState() {
+  const saved = localStorage.getItem('mundial2026_user');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    showLoggedIn();
+  }
+  // Load actual results from storage
+  loadActualResults();
+}
+
+function loadActualResults() {
+  const results = localStorage.getItem('mundial2026_results');
+  if (results) {
+    const parsed = JSON.parse(results);
+    ALL_MATCHES.forEach(m => {
+      if (parsed[m.id] !== undefined) {
+        m.homeScore = parsed[m.id].home;
+        m.awayScore = parsed[m.id].away;
+      }
+    });
+  }
+}
+
+// =====================
+// USER REGISTRATION
+// =====================
+function registerUser() {
+  const name = document.getElementById('input-name').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  if (!name) { showToast('Por favor introduce tu nombre', 'error'); return; }
+  if (!email || !email.includes('@')) { showToast('Email válido requerido', 'error'); return; }
+
+  currentUser = {
+    name,
+    email,
+    id: email.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+    predictions: {},
+    registeredAt: new Date().toISOString(),
+  };
+
+  // Load existing predictions if any
+  const existing = localStorage.getItem(`predictions_${currentUser.id}`);
+  if (existing) {
+    currentUser.predictions = JSON.parse(existing);
+  }
+
+  localStorage.setItem('mundial2026_user', JSON.stringify(currentUser));
+  saveUserToLog(currentUser);
+  showLoggedIn();
+  showToast(`¡Bienvenido, ${name}! 🎉`, 'success');
+  setTimeout(() => showPage('predictions'), 1000);
+}
+
+function showLoggedIn() {
+  document.getElementById('register-section').style.display = 'none';
+  document.getElementById('welcome-section').style.display = 'block';
+  document.getElementById('welcome-name').textContent = currentUser.name;
+  const count = Object.keys(currentUser.predictions || {}).length;
+  document.getElementById('welcome-stats').textContent = `${count} / 72 pronósticos guardados`;
+
+  // Nav badge
+  document.getElementById('user-badge').style.display = 'flex';
+  document.getElementById('user-avatar-letter').textContent = currentUser.name[0].toUpperCase();
+  document.getElementById('user-badge-name').textContent = currentUser.name;
+
+  document.getElementById('predictions-login-prompt').style.display = 'none';
+  document.getElementById('predictions-content').style.display = 'block';
+
+  renderGroupTabs();
+  renderMatches(currentGroup);
+  renderLeaderboard();
+}
+
+// =====================
+// SAVE TO LOG (GitHub-compatible)
+// =====================
+async function saveUserToLog(user) {
+  // Save to localStorage as main storage
+  const allUsers = JSON.parse(localStorage.getItem('mundial2026_all_users') || '{}');
+  allUsers[user.id] = {
+    name: user.name,
+    email: user.email,
+    registeredAt: user.registeredAt,
+    predictions: user.predictions,
+    lastUpdated: new Date().toISOString(),
+  };
+  localStorage.setItem('mundial2026_all_users', JSON.stringify(allUsers));
+
+  // Try to save to GitHub via API if configured
+  await tryGithubSave(allUsers);
+}
+
+async function tryGithubSave(data) {
+  const config = getGithubConfig();
+  if (!config.token || !config.repo) return;
+
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const path = 'data/predictions.json';
+
+    // Get current file SHA
+    let sha = null;
+    const check = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+      headers: { 'Authorization': `token ${config.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (check.ok) {
+      const file = await check.json();
+      sha = file.sha;
+    }
+
+    // Update or create file
+    const body = {
+      message: `Update predictions - ${new Date().toISOString()}`,
+      content,
+      ...(sha && { sha })
+    };
+
+    const res = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${config.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) console.warn('GitHub save failed:', await res.text());
+  } catch(e) {
+    console.warn('GitHub sync failed (offline?):', e.message);
+  }
+}
+
+function getGithubConfig() {
+  const saved = localStorage.getItem('mundial2026_github_config');
+  return saved ? JSON.parse(saved) : { token: null, repo: null };
+}
+
+// =====================
+// PREDICTIONS UI
+// =====================
+function renderGroupTabs() {
+  const tabs = document.getElementById('groups-tabs');
+  tabs.innerHTML = '';
+  Object.keys(GROUPS_DATA).forEach(g => {
+    const groupMatches = ALL_MATCHES.filter(m => m.group === g);
+    const filled = groupMatches.filter(m => {
+      const p = currentUser?.predictions?.[m.id];
+      return p && p.home !== '' && p.away !== '';
+    }).length;
+    const completed = filled === 6;
+    const btn = document.createElement('button');
+    btn.className = `group-tab ${g === currentGroup ? 'active' : ''} ${completed ? 'completed' : ''}`;
+    btn.innerHTML = `Grupo ${g} <span style="font-size:11px;opacity:0.6">${filled}/6</span>`;
+    btn.onclick = () => { currentGroup = g; renderGroupTabs(); renderMatches(g); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderMatches(group) {
+  const container = document.getElementById('matches-container');
+  const matches = ALL_MATCHES.filter(m => m.group === group);
+  container.innerHTML = '';
+
+  matches.forEach(m => {
+    const pred = currentUser?.predictions?.[m.id] || {};
+    const hasH = pred.home !== undefined && pred.home !== '';
+    const hasA = pred.away !== undefined && pred.away !== '';
+    const hasPred = hasH && hasA;
+
+    let pts = null;
+    if (hasPred && m.homeScore !== null) {
+      pts = calcPoints(+pred.home, +pred.away, m.homeScore, m.awayScore);
+    }
+
+    const card = document.createElement('div');
+    card.className = `match-card ${hasPred ? 'has-prediction' : ''} ${m.homeScore !== null ? 'locked' : ''}`;
+    card.innerHTML = `
+      ${pts !== null ? `<div class="match-points">+${pts} pts</div>` : ''}
+      <div class="match-team home">
+        <div class="team-flag">${FLAGS[m.home] || '🏳️'}</div>
+        <div class="team-name">${m.home}</div>
+      </div>
+      <div style="text-align:center">
+        <div class="match-prediction">
+          <input type="number" class="score-input ${hasH ? 'filled' : ''}" 
+            id="m${m.id}_h" min="0" max="20" value="${pred.home !== undefined ? pred.home : ''}"
+            ${m.homeScore !== null ? 'disabled' : ''}
+            oninput="updatePrediction(${m.id}, 'home', this.value)">
+          <span class="score-sep">—</span>
+          <input type="number" class="score-input ${hasA ? 'filled' : ''}"
+            id="m${m.id}_a" min="0" max="20" value="${pred.away !== undefined ? pred.away : ''}"
+            ${m.homeScore !== null ? 'disabled' : ''}
+            oninput="updatePrediction(${m.id}, 'away', this.value)">
+        </div>
+        ${m.homeScore !== null 
+          ? `<div class="match-result-actual">Real: ${m.homeScore} — ${m.awayScore}</div>` 
+          : `<div style="font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:1px;">TU PRONÓSTICO</div>`
+        }
+      </div>
+      <div class="match-team away">
+        <div class="team-flag">${FLAGS[m.away] || '🏳️'}</div>
+        <div class="team-name">${m.away}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function updatePrediction(matchId, side, value) {
+  if (!currentUser) return;
+  if (!currentUser.predictions) currentUser.predictions = {};
+  if (!currentUser.predictions[matchId]) currentUser.predictions[matchId] = {};
+  currentUser.predictions[matchId][side] = value === '' ? '' : parseInt(value);
+  pendingChanges = true;
+
+  const input = document.getElementById(`m${matchId}_${side === 'home' ? 'h' : 'a'}`);
+  input.classList.toggle('filled', value !== '');
+
+  updateProgress();
+  document.getElementById('save-bar').classList.add('visible');
+}
+
+function updateProgress() {
+  if (!currentUser) return;
+  let filled = 0;
+  ALL_MATCHES.forEach(m => {
+    const p = currentUser.predictions?.[m.id];
+    if (p && p.home !== '' && p.away !== '' && p.home !== undefined && p.away !== undefined) filled++;
+  });
+  document.getElementById('filled-count').textContent = filled;
+  document.getElementById('total-count').textContent = ALL_MATCHES.length;
+  document.getElementById('progress-fill').style.width = `${(filled / ALL_MATCHES.length) * 100}%`;
+}
+
+async function savePredictions() {
+  if (!currentUser) return;
+  localStorage.setItem(`predictions_${currentUser.id}`, JSON.stringify(currentUser.predictions));
+  localStorage.setItem('mundial2026_user', JSON.stringify(currentUser));
+  await saveUserToLog(currentUser);
+  pendingChanges = false;
+  document.getElementById('save-bar').classList.remove('visible');
+  showToast('Pronósticos guardados ✓', 'success');
+  renderGroupTabs();
+  renderLeaderboard();
+}
+
+// =====================
+// POINTS CALCULATION
+// =====================
+function calcPoints(ph, pa, ah, aa) {
+  if (ah === null || aa === null) return null;
+  if (ph === ah && pa === aa) return 4; // Exact: 3 + 1 bonus
+  const pd = ph - pa, ad = ah - aa;
+  if (Math.sign(pd) === Math.sign(ad) && pd === ad) return 2; // Right winner + goal diff
+  if (Math.sign(pd) === Math.sign(ad)) return 1; // Right winner
+  return 0;
+}
+
+// =====================
+// LEADERBOARD
+// =====================
+function renderLeaderboard() {
+  const allUsers = JSON.parse(localStorage.getItem('mundial2026_all_users') || '{}');
+  const list = document.getElementById('ranking-list');
+
+  const ranked = Object.values(allUsers).map(user => {
+    let totalPts = 0, exact = 0, correct = 0, played = 0;
+    ALL_MATCHES.forEach(m => {
+      if (m.homeScore === null) return;
+      played++;
+      const p = user.predictions?.[m.id];
+      if (!p || p.home === undefined || p.away === undefined) return;
+      const pts = calcPoints(+p.home, +p.away, m.homeScore, m.awayScore);
+      totalPts += pts;
+      if (pts >= 4) exact++;
+      else if (pts >= 1) correct++;
+    });
+    return { ...user, totalPts, exact, correct, played };
+  }).sort((a, b) => b.totalPts - a.totalPts);
+
+  if (ranked.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🏆</div><p>La clasificación aparecerá cuando haya pronósticos registrados</p></div>`;
+    return;
+  }
+
+  const medals = ['🥇', '🥈', '🥉'];
+  list.innerHTML = ranked.map((user, i) => `
+    <div class="rank-row rank-${i + 1}">
+      <div class="rank-pos">${i + 1}</div>
+      <div class="rank-medal">${medals[i] || ''}</div>
+      <div class="rank-name">${user.name}</div>
+      <div class="rank-stats">
+        <div class="stat-item">
+          <div class="stat-val">${user.exact}</div>
+          <div class="stat-label">Exactos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">${user.correct}</div>
+          <div class="stat-label">Aciertos</div>
+        </div>
+      </div>
+      <div class="rank-pts">${user.totalPts}</div>
+    </div>
+  `).join('');
+}
+
+// =====================
+// NAVIGATION
+// =====================
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelectorAll('.nav-btn')[['home','predictions','leaderboard'].indexOf(page)]?.classList.add('active');
+
+  if (page === 'leaderboard') renderLeaderboard();
+  if (page === 'predictions' && currentUser) {
+    renderGroupTabs();
+    renderMatches(currentGroup);
+  }
+}
+
+// =====================
+// TOAST
+// =====================
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// =====================
+// INIT
+// =====================
+loadState();
+</script>
+</body>
+</html>
